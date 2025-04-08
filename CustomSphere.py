@@ -1,18 +1,15 @@
-from vpython import sphere, vector, color, scene, rate
+from vpython import sphere, vector, textures
 import random
 from math import cos, sin, pi
 
 class CustomSphere:
-    def __init__(self, pos, radius=0.5, mass=None, velocity=vector(0, 0, 0)):
-        self.dt = 60
+    def __init__(self, pos, radius=0.5, mass=None, velocity=vector(0, 0, 0), sphere_color=vector(255, 255, 255), sphere_texture=None, axis = None):
         self.velocity = velocity
         self.pos = pos
         self.radius = radius
         self.mass = mass if mass is not None else random.uniform(1, 10)
-        
-        self.color = vector(255, 255, 255)
-        
-        self.sphere_obj = sphere(pos=self.pos, radius=self.radius, color=self.color)
+        self.axis = axis
+        self.sphere_obj = sphere(pos=self.pos, radius=self.radius, color=sphere_color, texture=sphere_texture)
     
     def update_position(self, dt = 1):
         self.pos.x = self.pos.x + self.velocity.x * dt
@@ -20,6 +17,10 @@ class CustomSphere:
         self.pos.z = self.pos.z + self.velocity.z * dt
         self.sphere_obj.pos = self.pos
         
+    def rotate(self, angle, dt = 1):
+        if not self.axis is None:
+            self.sphere_obj.rotate(angle=angle * dt, axis=self.axis, origin=self.sphere_obj.pos)
+
     def get_position(self):
         
         return self.pos
@@ -28,7 +29,7 @@ class CustomSphere:
         
         return self.velocity
     
-    def change_velocity(self, x, y, z):
-        self.velocity.x = self.velocity.x + x 
-        self.velocity.y = self.velocity.y + y 
-        self.velocity.z = self.velocity.z + z 
+    def change_velocity(self, x, y, z, dt):
+        self.velocity.x = self.velocity.x + x * dt
+        self.velocity.y = self.velocity.y + y * dt
+        self.velocity.z = self.velocity.z + z * dt
